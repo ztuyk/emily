@@ -1,158 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?nocache=194">
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/keen-slider@6.8.5/keen-slider.css"/>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-
 <div class="split right">
-  <div class="title"><h2>Emily M Foister</h2></div>
+  <div class="title"><h2>Emily Foister</h2></div>
   <div class="time"></div>
-  <div class="centered">
-    <div class="infinite-scroll" id="scrollContainer">
-      <div class="scroll-track" id="scrollTrack">
-        <img loading="lazy"  src="images/Charcot Lithograph.jpeg">
-        <img loading="lazy"  src="images/CitizenKane.jpg">
-        <img loading="lazy"  src="images/IMG_0352.jpeg">
-        <img loading="lazy"  src="images/34638a30-747f-409e-b16c-d81193709547.jpg">
-        <img loading="lazy"  src="images/IMG_0519.jpeg">
-        <img loading="lazy"  src="images/IMG_0628.jpeg">
-        <img loading="lazy"  src="images/IMG_0752.JPG">
-        <img loading="lazy"  src="images/IMG_1214.jpeg">
-        <img loading="lazy"  src="images/IMG_1324.JPG">
-        <img loading="lazy"  src="images/IMG_1722.jpeg">
-        <img loading="lazy"  src="images/IMG_2117.jpeg">
-        <img loading="lazy"  src="images/IMG_2247.jpeg">
-        <img loading="lazy"  src="images/IMG_2250.jpeg">
-        <img loading="lazy"  src="images/IMG_2493.jpeg">
-        <img loading="lazy"  src="images/IMG_2930.JPG">
-        <img loading="lazy"  src="images/IMG_3303.jpeg">
-        <img loading="lazy"  src="images/IMG_3503.jpeg">
-        <img loading="lazy"  src="images/IMG_3615.JPG">
-        <img loading="lazy"  src="images/IMG_3648.jpeg">
-        <img loading="lazy"  src="images/IMG_3834.JPG">
-        <img loading="lazy"  src="images/IMG_3845.jpeg">
-        <img loading="lazy"  src="images/IMG_3860.jpeg">
-        <img loading="lazy"  src="images/IMG_4186.jpeg">
-        <img loading="lazy"  src="images/IMG_4513.JPG">
-        <img loading="lazy"  src="images/IMG_4782.jpeg">
-        <img loading="lazy"  src="images/IMG_6483.WEBP">
-        <img loading="lazy"  src="images/IMG_6532.jpeg">
-        <img loading="lazy"  src="images/IMG_6750.jpeg">
-        <img loading="lazy"  src="images/IMG_7323.JPG">
-        <img loading="lazy"  src="images/IMG_9019.JPG">
-        <img loading="lazy"  src="images/IMG_9442.jpeg">
-        <img loading="lazy"  src="images/IMG_9451.JPG">
-        <img loading="lazy"  src="images/IMG_9470.JPG">
-        <img loading="lazy"  src="images/IMG_9857.JPG">
-        <img loading="lazy"  src="images/kupka vision d'un alcoolique.jpg">
-        <img loading="lazy"  src="images/profile.jpg">
-        <img loading="lazy"  src="images/Same Mistakes.jpg">
-      </div>
-    </div>
+<div class="keen-slider" id="slider"></div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <button class="lightbox-close" aria-label="Close (Esc)"></button>
+    <img class="lightbox-image" alt="" style="display:none;" />
+    <video class="lightbox-video" controls style="display:none; max-width:95vw; max-height:85vh;"></video>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
   </div>
-      <div class="accordion">
-        <h4 class="accordion__title">
-          ABOUT
-          <i class="accordion__icon">
-            <div class="line-01"></div>
-            <div class="line-02"></div>
-          </i>
-        </h4><!-- end .accordion__title -->
-        <div class="accordion__content">
-          <div class="about_img">
-            <img loading="lazy"  src="images/IMG_0824.jpeg"/>
-          </div>
-          <p>I am a Postdoctoral Teaching Fellow at New York University. I research, write, and teach on feminism and women&#8217;s work, life writing, fan studies, and other weirder and wider topics in 20th and 21st century literature and culture.</p>
-          <p>My doctorate, &#8223;Uncreativity and Women Makers: 1960-1980,&#8221; takes up second-wave feminism and its legacies, focusing on women who sought to redefine the terms of creative practice. The project is rooted in precarious archives. I dramatise my encounters with invisible and incomplete texts, half-remembered experiences, and forgotten objects: a crass doodle, letters of complaint, a joke on the sleeve of an LP. It was nominated for the NYU Graduate School of Arts and Science Dean&#8217;s Outstanding Dissertation Award in 2025.</p>
-          <p>I was born in Wales and have worked as a dish washer, a barmaid, a babysitter, and a shop girl; at a supermarket, a floatarium, a gig venue, and a Celtic football pub. I was surprised and delighted when the Dean&#8217;s office at NYU GSAS chose me as the class representative for my graduating doctoral cohort in 2025.</p>
-          <p>I have a background in <a href="https://www.bklynlibrary.org/support/volunteer/literacy-volunteer" target="_blank">adult literacy</a>, <a href="https://mcgraw.princeton.edu/community-college-engagement/prison-teaching-initiative" target="_blank">carceral education</a>, and <a href="https://gsas.nyu.edu/student-life/diversity/PathwaystoPhDProgram.html#:~:text=The%20GSAS%20Pathways%20to%20the,accompany%20that%20course%20of%20study*." target="_blank">mentoring</a>. I taught for several years in the Anglophone Literature department of Universit&#233; Sorbonne Nouvelle Paris III before moving to New York for my doctoral studies. I won the NYU College of Arts and Science Outstanding Teaching Award in 2023.</p>
-          <p>I collaborated with my friend and performance artist <a href="https://www.calvinzlaing.com/" target="_blank">Calvin Z. Laing</a> on an alter ego workshop; I was the introducer and discussant for a <a href="https://www.luke-fowler.com/works/being-in-a-place-a-portrait-of-margaret-tait/" target="_blank">Luke Fowler film on Margaret Tait</a> for the <a href="https://www.instagram.com/colloquium_unpopular_culture/?hl=en" target="_blank">Colloquium for Unpopular Culture</a>; and I hosted a poetry reading for <a href="https://www.poetryfoundation.org/people/honey-crawford" target="_blank">Honey Crawford</a>, <a href="http://www.amyhowdenchapman.com/" target="_blank">Amy Howden-Chapman</a>, <a href="https://invisiblepublishing.com/authors/zane-koss/?srsltid=AfmBOorHygyUYVdKvggDydr9P62skuq43MtJTW37jln94wqq4fB2FrHt" target="_blank">Zane Koss</a>, and <a href="https://actionbooks.org/2021/11/poesia-en-accion-translator-micro-interview-series-garrett-phelps/" target="_blank">Garrett Phelps</a> at <a href="https://unnameablebooks.square.site/" target="_blank">Unnameable Books</a>.</p>
-          <p>I&#8217;m on the core steering committee for the Women in World-Literature Network, a growing global hub for feminist scholars, and I was recently invited to join the editorial board for Feminist Modernist Studies. For five years I ran the <a href="https://wp.nyu.edu/culturesofwar/" target="_blank">NYU Cultures of War and the Postwar Research Collaborative</a> with <a href="https://as.nyu.edu/faculty/patrick-deer.html" target="_blank">Patrick Deer</a>, a longstanding public humanities initiative that brings together academics, veterans, activists, and artists to listen, debate, and build dialogue.</p>
-          <p>I have a First Class MA Hons in English Literature and an MSc in Literature and Modernity with distinction from the University of Edinburgh.</p>
-        </div><!-- end .accordion__content -->
-      </div><!-- end .accordion 01 -->
 
-      <div class="accordion">
-        <h4 class="accordion__title">
-          RESEARCH AND WRITING
-          <i class="accordion__icon">
-            <div class="line-01"></div>
-            <div class="line-02"></div>
-          </i>
-        </h4><!-- end .accordion__title -->
-        <div class="accordion__content">
-          <p>Work from my doctoral dissertation is forthcoming in <span class="emph">Women in World-Literature: A Reader</span> (Liverpool UP, 2026) and The Paris Review. For the former, I wrote about maintenance artist Mierle Laderman Ukeles and social reproduction, retrieving the texture of how we live, the playful and emotive aspects of work and leisure, that theories of reproductive labour can overlook. For the latter, I introduced a fragment from Anya Berger&#8217;s private archive which will be published next month. Anya Berger (1923-2018) was a translator, book-reviewer, Jewish refugee, and &#8223;muse,&#8221; most famous for being the wife of art critic and novelist John Berger. This is part of a longer-term book project, in collaboration with her daughter Katya Berger and the feminist writer Mona Chollet, to publish a collection of her life writing and strengthen her legacy.</p>
-          <p>I have also written about <a href="https://nyu.app.box.com/s/to500y40lv26l4ctqha9kwxdqkmd76ml" target="_blank">Kazuo Ishiguro and what it means to be human</a>, and contributed a chapter of original archival research on imperial exorcism and disappointment in the 1960s Philippine arts journal <span class="emph">Solidarity</span> to <a href="https://www.routledge.com/The-Cultural-Cold-War-and-the-Global-South-Sites-of-Contest-and-Communitas/Bystrom-Popescu-Zien/p/book/9780367679385?srsltid=AfmBOooKjUXfvNo-EZZIL-dsNxC0e7SApmd10WjcgoAtTor31I3BmMa0" target="_blank">a volume on the cultural cold war and the Global South</a>.</p>
-          <p>While turning my dissertation into a book, I&#8217;m working on a medical humanities article about women doctors engaging with the afterlives of John Berger&#8217;s <span class="emph">A Fortunate Man</span> (1967) and the feminisation of the role of the general practitioner; a fan studies piece reconsidering the &#8223;groupie&#8221; and making a case for the thwarted creativity of the muse; a reflection on women&#8217;s uses of violence, centred on feminist sci-fi writer Joanna Russ&#8217; <span class="emph">The Female Man</span> (1975); and a project that seeks to restore pioneering British-Guyanese writer and educator Beryl Gilroy (1924-2001) to the predominantly masculine canon of Windrush literature.</p>
-        </div><!-- end .accordion__content -->
-      </div><!-- end .accordion 02 -->
+<div id="accordion-mount"></div>
 
-      <div class="accordion">
-        <h4 class="accordion__title">
-          TEACHING
-          <i class="accordion__icon">
-            <div class="line-01"></div>
-            <div class="line-02"></div>
-          </i>
-        </h4><!-- end .accordion__title -->
-        <div class="accordion__content">
-            <p>Below are some short descriptions of courses I have taught at NYU, including one I will be teaching in AY 2025-6.
-            I am currently developing a course on women and anger, and have syllabi mapped out for three new courses: &#8223;Uncreativity and Women Makers: Literature as Theory and Practice,&#8221; &#8223;Freak Pastoral: Environmental Humanities and Dystopian Representations of Landscape,&#8221; and &#8223;Alt-Sex: Monstrous Desire in post-1945 Literature.&#8221; I have also previously taught college courses on &#8223;Autofiction&#8221; and &#8223;Cold War Paranoia.&#8221;</p>
-
-            <h1>Complexities: Oceans</h1>
-            <p>A pioneering course to replace the first-year seminar. Founded on experiential learning practices that encourage broad curiosity and pleasure in the process of enquiry, instructors use modules of their own design combined with those contributed by NYU faculty across disciplines (a marine biologist on fish consciousness, a chemist on scurvy, an ethicist on the Drexciya myth). My module, &#8223;Oceanic Feminisms: Mythological Mermaids to the Aquatic Ape Hypothesis,&#8221; moves from the sirens of Homer&#8217;s Odyssey to the selkies of Scotland, using the mermaids of folklore as an ingress to feminist models of alternative evolution, hydrofeminism, and the ridiculed Aquatic Ape Theory. How might pseudoscience remain useful data, as an expression of frustration with tired orthodoxies? Why has the sea historically been imagined not only as feminine, but also as a portal to the magical and the prehuman? In what ways can we map the tides of the ocean onto the four &#8223;waves&#8221; of feminism? Texts include Friedrich de la Motte Fouqu&#233;, Hans Christian Andersen, John Berger, Rachel Carson, Evelyn Reed, Astrida Neimanis, and Elaine Morgan.</p>
-
-            <h1>Fanatic: Mythology and Mania in Pop Culture</h1>
-            <p>From life-long obsessions to passing fads, fandom promises a sense of collective belonging in an alienating and individualistic society. The figure of the fan has long been gendered female, connected with the subjugation and silencing of women and bound up in the sexist science of hysteria. This course uses film, mass market fiction, memoir, fan letters, cult classics, and non-fiction essays to consider the surreal aspects of fandom and the excesses of the fanatic, from the buff to the zealot, offering a chance to analyse, laugh at, and even indulge in our own insanities. What role does fandom play in the formation, and renegotiation, of our identities? How do we consume our obsessions, and how do our obsessions consume us? Texts include Silvia Federici, Laura Mulvey, Barbara Ehrenreich, Angela McRobbie, Esther Yi, Sayaka Murata, Fred Vermorel, and Leo Braudy.</p>
-
-            <h1>Reading as a Writer: Feminist Compositions</h1>
-            <p>Reading as writers, we will explore the stories of women and &#8223;others&#8221; as would-be authors trying to make themselves heard from the gaps and erasures of the archive. If, as Foucault says, such power is not monolithic, but at every moment &#8223;in play in little singular struggles, with local reversals, regional defeats and victories, provisional revenges,&#8221; how have women and other marginalized writers resisted, creating alternative narrative pathways? Texts include Louise Erdrich, Rebecca Solnit, Lucille Clifton, Nell Dunn, Diane di Prima, Natasha Brown, and Diana Evans.</p>
- 
-            <h1>The Women&#8217;s Liberation Movement: Major Texts in Critical Theory</h1>
-            <p>The Women&#8217;s Liberation Movement (WLM) was spontaneous and iconoclastic. Its impulse and demands reached far beyond its estimated twenty thousand activists in the mid-1970s. In this course we will be placing literary texts in an expanded cultural field which includes readings of political speeches, correspondence between friends, community-organising, family micropolitics and neighbourly collaboration, alongside &#8223;pornographic&#8221; video art, television adaptations, translation work, interactive public performance, and journalistic writing. If designations like &#8223;craft&#8221; and &#8223;folk&#8221; have been used historically to denigrate female acts of creation, together we will re-read these methods as a provocation for the subversive, a gap for avant-gardism to emerge in plain sight. Texts include Andrea Dworkin, Maxine Hong Kingston, Leslie Marmon Silko, Yuri Kochiyama, Gloria Steinem, Gloria Anzald&#250;a, Angela Davis, and Valerie Solanas.</p>
-        </div><!-- end .accordion__content -->
-      </div><!-- end .accordion 03 -->
-
-      <div class="accordion">
-        <h4 class="accordion__title">
-          CONTACT
-          <i class="accordion__icon">
-            <div class="line-01"></div>
-            <div class="line-02"></div>
-          </i>
-        </h4><!-- end .accordion__title -->
-        <div class="accordion__content">
-            <p>You can email me at emf [at] nyu [dot] edu, and follow me on Instagram at @emilymfoister</p>
-        </div><!-- end .accordion__content -->
-      </div><!-- end .accordion 04 -->
-  </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script>
 <script src="https://momentjs.com/downloads/moment-timezone-with-data.min.js"></script>
-<script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/keen-slider@6.8.5/keen-slider.min.js"></script>
+<script src="script.js"></script>
 <script>
-  $(".accordion__title").click(function () {
-    const $accordion_wrapper = $(this).parent();
-    const $accordion_content = $(this).parent().find(".accordion__content");
-    const $accordion_open = "accordion--open";
-
-    $(".accordion").not($accordion_wrapper).removeClass($accordion_open).find(".accordion__content").slideUp();
-
-    if ($accordion_wrapper.hasClass($accordion_open)) {
-      $accordion_content.slideUp();
-      $accordion_wrapper.removeClass($accordion_open);
-    } else {
-      $accordion_content.slideDown();
-      $accordion_wrapper.addClass($accordion_open);
-    }
-  });
+  //time
 
   var update = function () {
     currentTime = moment.tz("America/New_York");
@@ -163,97 +43,10 @@
     update();
     setInterval(update, 1000);
   });
-
-  function revealImage(img) {
-    if (img.complete && img.naturalHeight !== 0) {
-      requestAnimationFrame(() => {
-        img.classList.add('visible');
-      });
-    } else {
-      img.addEventListener('load', () => {
-        img.classList.add('visible');
-      });
-      img.addEventListener('error', () => {
-        console.warn('Image failed to load:', img.src);
-      });
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("scrollContainer");
-    const track = document.getElementById("scrollTrack");
-
-    const originalItems = Array.from(track.children);
-    const numClones = 2;
-
-    // Clone images to both sides
-    for (let i = 0; i < numClones; i++) {
-      originalItems.forEach(item => {
-        track.appendChild(item.cloneNode(true));
-      });
-      originalItems.forEach(item => {
-        track.insertBefore(item.cloneNode(true), track.firstChild);
-      });
-    }
-
-    // Apply revealImage to all images including clones
-    document.querySelectorAll('.scroll-track img').forEach(revealImage);
-
-    const scrollToMiddle = () => {
-      const middle = track.scrollWidth / 2 - container.offsetWidth / 2;
-      container.scrollLeft = middle;
-    };
-
-    scrollToMiddle();
-
-    container.addEventListener("scroll", () => {
-      const maxScroll = track.scrollWidth;
-      const edgeBuffer = container.offsetWidth;
-
-      if (container.scrollLeft < edgeBuffer) {
-        scrollToMiddle();
-      }
-      if (container.scrollLeft > maxScroll - edgeBuffer) {
-        scrollToMiddle();
-      }
-    });
-
-    // Dragging
-    let isDown = false, startX, scrollLeft;
-
-    container.addEventListener("mousedown", e => {
-      isDown = true;
-      startX = e.pageX;
-      scrollLeft = container.scrollLeft;
-    });
-
-    container.addEventListener("mouseleave", () => isDown = false);
-    container.addEventListener("mouseup", () => isDown = false);
-
-    container.addEventListener("mousemove", e => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeft - walk;
-    });
-
-    container.addEventListener("touchstart", e => {
-      isDown = true;
-      startX = e.touches[0].pageX;
-      scrollLeft = container.scrollLeft;
-    });
-
-    container.addEventListener("touchend", () => isDown = false);
-
-    container.addEventListener("touchmove", e => {
-      if (!isDown) return;
-      const x = e.touches[0].pageX;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeft - walk;
-    });
-  });
 </script>
+
+
+
 
 </body>
 </html> 
