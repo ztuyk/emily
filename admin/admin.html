@@ -177,38 +177,62 @@ function initQuill(){
     return data.publicUrl;
   }
 
-  // Intercept image button: upload THUMB then FULL, insert required markup
-  window._quill.getModule('toolbar').addHandler('image', () => {
-    const pickFile = (label) => new Promise((resolve) => {
-      const input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
-      document.body.appendChild(input);
-      alert(label); // Prompt the user clearly for which file to upload
-      input.onchange = () => { resolve(input.files && input.files[0]); document.body.removeChild(input); };
-      input.click();
-    });
-
-    (async () => {
-      try {
-        const thumbFile = await pickFile('Please choose the THUMBNAIL image');
-        if (!thumbFile) return;
-        const thumbUrl = await uploadToBucket(thumbFile, 'thumbs');
-
-        const fullFile = await pickFile('Please choose the FULL-SIZE image (optional)');
-        let fullUrl;
-        if (fullFile) fullUrl = await uploadToBucket(fullFile, 'full');
-        else fullUrl = thumbUrl; // fallback if only one provided
-
-        const alt = prompt('Caption (alt):') || '';
-        const imgHtml = `<img class="lightbox-trigger" alt="${alt.replace(/"/g,'&quot;')}" src="${thumbUrl}" data-full="${fullUrl}"/>`;
-        const range = window._quill.getSelection(true) || { index: window._quill.getLength(), length: 0 };
-        window._quill.clipboard.dangerouslyPasteHTML(range.index, imgHtml);
-      } catch (err) {
-        console.warn('Image insert failed:', err);
-        alert('Upload failed: ' + (err.message || err));
-      }
-    })();
+// ONE handler for both still images and videos (GIF+MP4)
+window._quill.getModule('toolbar').addHandler('image', () => {
+  const pickFile = (accept, label) => new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = accept;
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    alert(label);
+    input.onchange = () => {
+      resolve(input.files?.[0] || null);
+      document.body.removeChild(input);
+    };
+    input.click();
   });
+
+  (async () => {
+    try {
+      // Ask what they’re adding
+      const mode = confirm('Click "OK" for VIDEO (GIF thumb + MP4).\nClick "Cancel" for IMAGE (thumb + optional full).')
+        ? 'video' : 'image';
+
+      let thumbUrl = '';
+      let fullUrl = '';
+
+      if (mode === 'video') {
+        // VIDEO: GIF thumbnail then MP4 full
+        const gif = await pickFile('image/gif', 'Choose the GIF THUMBNAIL');
+        if (!gif) return;
+        thumbUrl = await uploadToBucket(gif, 'thumbs');
+
+        const mp4 = await pickFile('video/mp4', 'Choose the FULL-SIZE MP4');
+        if (!mp4) return;
+        fullUrl = await uploadToBucket(mp4, 'videos');
+      } else {
+        // IMAGE: thumbnail (any image) then optional FULL image
+        const thumb = await pickFile('image/*', 'Choose the THUMBNAIL image');
+        if (!thumb) return;
+        thumbUrl = await uploadToBucket(thumb, 'thumbs');
+
+        const full = await pickFile('image/*', 'Choose the FULL-SIZE image (optional)');
+        if (full) fullUrl = await uploadToBucket(full, 'full');
+        else fullUrl = thumbUrl; // fallback
+      }
+
+      const alt = prompt('Caption (alt):') || '';
+      const html = `<img class="lightbox-trigger" alt="${alt.replace(/"/g,'&quot;')}" src="${thumbUrl}" data-full="${fullUrl}"/>`;
+      const range = window._quill.getSelection(true) || { index: window._quill.getLength(), length: 0 };
+      window._quill.clipboard.dangerouslyPasteHTML(range.index, html);
+    } catch (err) {
+      alert('Upload failed: ' + (err.message || err));
+      console.warn(err);
+    }
+  })();
+});
+
 
   window._quilled = true;
 }
