@@ -130,6 +130,9 @@ h4 {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#CADBE8", endColorstr="#F2EDED", GradientType=0);
 }
 
+.accordion__content a { color: var(--link-color, green); }
+.accordion__content a[style*="color"] { color: var(--link-color, green) !important; }
+
 .accordion__content p {
   margin: 0 0 16px;
   line-height: 1.5;
@@ -308,5 +311,6 @@ span.emph {
 .about_img {
   width: 150px;
 }
+
 
 }
