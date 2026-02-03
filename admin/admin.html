@@ -43,21 +43,9 @@
       <div class="grid">
         <div>
           <h3>Sign in</h3>
-          <form id="auth-form" autocomplete="on">
-          <label>Email<input
-  id="email"
-  type="email"
-  placeholder="you@example.com"
-  autocomplete="username"
-/>
-</label>
-          <label>Password<input
-  id="password"
-  type="password"
-  placeholder="••••••••"
-  autocomplete="current-password"
-/>
-</label>
+          <form id="login-form">
+          <label>Email<input id="email" type="email" placeholder="you@example.com" autocomplete="email"></label>
+          <label>Password<input id="password" type="password" placeholder="••••••••" autocomplete="current-password"></label>
           <div class="row">
             <button id="signin">Sign in</button>
             <button id="magic" class="ghost">Send magic link</button>
@@ -135,113 +123,34 @@
   </div>
 
 <script>
-/* ===============================
-   CONFIG
-================================ */
-const SB_URL = "https://opkhgpybppengmntfkae.supabase.co";
-const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wa2hncHlicHBlbmdtbnRma2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMTkxNzEsImV4cCI6MjA3MDU5NTE3MX0.iMafxgfUm96zP1gYzYlU0NycGGfVQR6yIId1yRZg_DY";
+let sb; // supabase client instance
+// ===== Hardcode your Supabase project once (no inputs) =====
+const SB_URL = "https://opkhgpybppengmntfkae.supabase.co"; 
+const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wa2hncHlicHBlbmdtbnRma2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMTkxNzEsImV4cCI6MjA3MDU5NTE3MX0.iMafxgfUm96zP1gYzYlU0NycGGfVQR6yIId1yRZg_DY";   
 
-/* ===============================
-   HARD FAIL GUARDS
-================================ */
-if (!window.supabase) {
-  throw new Error("Supabase JS not loaded. CDN missing or failed.");
-}
+function uid(){return Math.random().toString(36).slice(2)+Date.now()}
+function el(id){return document.getElementById(id)}
+function show(id, yes){el(id).classList.toggle('hidden', !yes)}
 
-/* ===============================
-   CLIENT (single source of truth)
-================================ */
-const sb = window.supabase.createClient(SB_URL, ANON_KEY);
+// Quill init
+function initQuill(){
+  if (window._quilled) return; // init once
+  if (!window.Quill) { setTimeout(initQuill, 80); return; }
 
-/* ===============================
-   HELPERS
-================================ */
-const el = (id) => document.getElementById(id);
-const show = (id, yes) => el(id).classList.toggle("hidden", !yes);
-const uid = () => Math.random().toString(36).slice(2) + Date.now();
-
-/* ===============================
-   AUTH
-================================ */
-async function signIn() {
-  const email = el("email").value.trim();
-  const password = el("password").value;
-
-  if (!email || !password) {
-    alert("Email + password required");
-    return;
-  }
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  afterAuth(data.user);
-}
-
-async function magicLink() {
-  const email = el("email").value.trim();
-  if (!email) {
-    alert("Enter email");
-    return;
-  }
-
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: window.location.href },
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  alert("Magic link sent. Check your email.");
-}
-
-async function logout() {
-  await sb.auth.signOut();
-  location.reload();
-}
-
-function afterAuth(user) {
-  el("who").textContent = user.email;
-  show("auth", false);
-  show("app", true);
-  el("logout").classList.remove("hidden");
-
-  initQuill();
-  loadSlides();
-  loadSections();
-}
-
-/* ===============================
-   QUILL
-================================ */
-function initQuill() {
-  if (window._quilled) return;
-  if (!window.Quill) {
-    setTimeout(initQuill, 80);
-    return;
-  }
-
-  const BaseImage = Quill.import("formats/image");
+  // --- Quill image blot that preserves class, alt, and data-full ---
+  const BaseImage = Quill.import('formats/image');
   class ImageWithAttrs extends BaseImage {
     static formats(domNode) {
-      const f = super.formats(domNode) || {};
-      ["alt", "data-full", "class"].forEach((k) => {
-        const v = domNode.getAttribute(k);
-        if (v) f[k] = v;
+      const formats = super.formats(domNode) || {};
+      ['alt','data-full','class'].forEach((attr)=>{
+        const v = domNode.getAttribute(attr);
+        if (v) formats[attr] = v;
       });
-      return f;
+      return formats;
     }
     format(name, value) {
-      if (["alt", "data-full", "class"].includes(name)) {
-        value
-          ? this.domNode.setAttribute(name, value)
-          : this.domNode.removeAttribute(name);
+      if (['alt','data-full','class'].includes(name)) {
+        if (value) this.domNode.setAttribute(name, value); else this.domNode.removeAttribute(name);
       } else {
         super.format(name, value);
       }
@@ -249,160 +158,282 @@ function initQuill() {
   }
   Quill.register(ImageWithAttrs, true);
 
-  ["color", "background"].forEach((name) => {
-    ["class", "style"].forEach((type) => {
+  // Disable color/background formats entirely
+  ['color','background'].forEach((name) => {
+    ['class','style'].forEach((type) => {
       const attr = Quill.import(`attributors/${type}/${name}`);
       if (attr) Quill.register(attr, false);
     });
   });
 
-  window._quill = new Quill("#sec-body", {
-    theme: "snow",
-    modules: {
-      toolbar: [
-        ["bold", "italic", "underline"],
-        [{ header: [4, false] }],
-        [{ list: "ordered" }, { list: "bullet" }],
-        ["link", "image"],
-        ["clean"],
-      ],
-    },
+  const toolbarOptions = [
+    ['bold','italic','underline'],
+    [{ header: [4, false] }], // dropdown with H4 and normal
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['link','image'],
+    ['clean']
+  ];
+  window._quill = new Quill('#sec-body', {
+    theme: 'snow',
+    modules: { toolbar: toolbarOptions }
   });
+
+  // Remove inline color on paste (especially from <a> tags)
+  window._quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+    if (node.nodeName === 'A') node.removeAttribute('style');   // kill link inline styles
+    if (node.style && node.style.color) node.style.removeProperty('color'); // kill span color
+    return delta;
+  });
+
+  function uid(){ return Math.random().toString(36).slice(2)+Date.now(); }
+  async function uploadToBucket(file, prefix){
+    const path = `${prefix}/${new Date().toISOString().slice(0,10)}/${uid()}-${file.name}`;
+    const { error } = await sb.storage.from('images').upload(path, file, { upsert:false });
+    if (error) throw error;
+    const { data } = sb.storage.from('images').getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+// ONE handler for both still images and videos (GIF+MP4)
+window._quill.getModule('toolbar').addHandler('image', () => {
+  const pickFile = (accept, label) => new Promise((resolve) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = accept;
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    alert(label);
+    input.onchange = () => {
+      resolve(input.files?.[0] || null);
+      document.body.removeChild(input);
+    };
+    input.click();
+  });
+
+  (async () => {
+    try {
+      // Ask what they’re adding
+      const mode = confirm('Click "OK" for VIDEO (GIF thumb + MP4).\nClick "Cancel" for IMAGE (thumb + optional full).')
+        ? 'video' : 'image';
+
+      let thumbUrl = '';
+      let fullUrl = '';
+
+      if (mode === 'video') {
+        // VIDEO: GIF thumbnail then MP4 full
+        const gif = await pickFile('image/gif', 'Choose the GIF THUMBNAIL');
+        if (!gif) return;
+        thumbUrl = await uploadToBucket(gif, 'thumbs');
+
+        const mp4 = await pickFile('video/mp4', 'Choose the FULL-SIZE MP4');
+        if (!mp4) return;
+        fullUrl = await uploadToBucket(mp4, 'videos');
+      } else {
+        // IMAGE: thumbnail (any image) then optional FULL image
+        const thumb = await pickFile('image/*', 'Choose the THUMBNAIL image');
+        if (!thumb) return;
+        thumbUrl = await uploadToBucket(thumb, 'thumbs');
+
+        const full = await pickFile('image/*', 'Choose the FULL-SIZE image (optional)');
+        if (full) fullUrl = await uploadToBucket(full, 'full');
+        else fullUrl = thumbUrl; // fallback
+      }
+
+      const alt = prompt('Caption (alt):') || '';
+      const html = `<img class="lightbox-trigger" alt="${alt.replace(/"/g,'&quot;')}" src="${thumbUrl}" data-full="${fullUrl}"/>`;
+      const range = window._quill.getSelection(true) || { index: window._quill.getLength(), length: 0 };
+      window._quill.clipboard.dangerouslyPasteHTML(range.index, html);
+    } catch (err) {
+      alert('Upload failed: ' + (err.message || err));
+      console.warn(err);
+    }
+  })();
+});
+
 
   window._quilled = true;
 }
 
-/* ===============================
-   STORAGE
-================================ */
-async function uploadToBucket(file, prefix) {
-  const path = `${prefix}/${new Date().toISOString().slice(0, 10)}/${uid()}-${file.name}`;
-  const { error } = await sb.storage.from("images").upload(path, file, { upsert: false });
-  if (error) throw error;
-  return sb.storage.from("images").getPublicUrl(path).data.publicUrl;
+
+
+async function bootstrapClient(){
+  if (!window.supabase) return false;
+  if (!sb) sb = window.supabase.createClient(SB_URL, ANON_KEY);
+  return true;
 }
 
-/* ===============================
-   SLIDES
-================================ */
-async function loadSlides() {
-  const list = el("slides");
-  list.innerHTML = "";
-
-  const { data, error } = await sb
-    .from("slides")
-    .select("*")
-    .order("position", { ascending: true });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  data.forEach((s) => list.appendChild(renderSlideItem(s)));
+async function signIn(){
+  if(!await bootstrapClient()) return;
+  const email = el('email').value.trim();
+  const password = el('password').value;
+  if(!email || !password){alert('Email + password required');return}
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error){ alert(error.message); return }
+  afterAuth(data.user);
 }
 
-function renderSlideItem(s) {
-  const div = document.createElement("div");
-  div.className = "item";
+async function magicLink(){
+  if(!await bootstrapClient()) return;
+  const email = el('email').value.trim();
+  if(!email){alert('Enter email');return}
+  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href } });
+  if(error){ alert(error.message); return }
+  alert('Magic link sent. Check your email.');
+}
 
-  const img = document.createElement("img");
-  img.src = s.thumb_url || s.full_url;
-  img.alt = s.alt || "";
+function afterAuth(user){
+  el('who').textContent = user?.email || '';
+  show('auth', false);
+  show('app', true);
+  el('logout').classList.remove('hidden');
+  initQuill();
+  loadSlides();
+  loadSections();
+}
 
-  const meta = document.createElement("div");
-  meta.innerHTML = `
-    <div><strong>${s.alt || "—"}</strong></div>
-    <div class="muted">pos ${s.position ?? 0} · ${s.published ? "published" : "draft"} · ${s.shape || "square"}</div>
-  `;
+async function logout(){ await sb.auth.signOut(); location.reload() }
 
-  const actions = document.createElement("div");
-  actions.className = "grid";
+// ---------- Slides ----------
+async function loadSlides(){
+  const list = el('slides'); list.innerHTML = '';
+  const { data, error } = await sb.from('slides').select('*').order('position', { ascending: true });
+  if(error){ alert(error.message); return }
+  data.forEach(s=> list.appendChild(renderSlideItem(s)));
+}
 
-  const edit = document.createElement("button");
-  edit.textContent = "Edit";
-  edit.onclick = () => fillSlideForm(s);
-
-  const del = document.createElement("button");
-  del.textContent = "Delete";
-  del.className = "danger";
-  del.onclick = () => deleteSlide(s.id);
-
+function renderSlideItem(s){
+  const div = document.createElement('div'); div.className='item';
+  const img = document.createElement('img'); img.src = s.thumb_url || s.full_url; img.alt = s.alt || '';
+  const meta = document.createElement('div');
+  meta.innerHTML = `<div><strong>${s.alt||'—'}</strong></div>
+    <div class="muted">pos ${s.position ?? 0} · ${s.published? 'published':'draft'} · ${s.shape||'square'}</div>
+    <div class="muted" style="word-break:break-all">full: ${s.full_url}</div>`;
+  const actions = document.createElement('div'); actions.className='grid';
+  const edit = document.createElement('button'); edit.textContent='Edit'; edit.onclick=()=> fillSlideForm(s);
+  const del = document.createElement('button'); del.textContent='Delete'; del.className='danger'; del.onclick=()=> deleteSlide(s.id);
   actions.append(edit, del);
   div.append(img, meta, actions);
   return div;
 }
 
-async function deleteSlide(id) {
-  if (!confirm("Delete this slide?")) return;
-  const { error } = await sb.from("slides").delete().eq("id", id);
-  if (error) alert(error.message);
+function resetSlideForm(){ el('slide-id').value=''; el('slide-alt').value=''; el('slide-full').value=''; el('slide-thumb').value=''; el('slide-pos').value='0'; el('slide-pub').value='true'; el('slide-shape').value='square'; }
+function fillSlideForm(s){ el('slide-id').value=s.id; el('slide-alt').value=s.alt||''; el('slide-pos').value=s.position||0; el('slide-pub').value= String(!!s.published); el('slide-shape').value=(s.shape||'square'); }
+
+async function uploadIfFile(input){
+  const f = input.files?.[0]; if(!f) return null;
+  const path = `uploads/${new Date().toISOString().slice(0,10)}/${uid()}-${f.name}`;
+  const { error } = await sb.storage.from('images').upload(path, f, { upsert:false });
+  if(error) throw error;
+  const { data } = sb.storage.from('images').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+async function saveSlide(e){
+  e.preventDefault();
+  const id = el('slide-id').value || null;
+  const alt = el('slide-alt').value.trim();
+  const shape = el('slide-shape').value || 'square';
+  const published = el('slide-pub').value === 'true';
+  const position = Number(el('slide-pos').value||0);
+  try{
+    const fullUrlNew = await uploadIfFile(el('slide-full'));
+    const thumbUrlNew = await uploadIfFile(el('slide-thumb'));
+    if(id){
+      const { data:rows, error:err1 } = await sb.from('slides').select('*').eq('id', id).single();
+      if(err1) throw err1;
+      const update = { alt, shape, published, position, full_url: fullUrlNew || rows.full_url, thumb_url: thumbUrlNew || rows.thumb_url };
+      const { error } = await sb.from('slides').update(update).eq('id', id);
+      if(error) throw error;
+    }else{
+      const { error } = await sb.from('slides').insert([{ alt, shape, published, position, full_url: fullUrlNew, thumb_url: thumbUrlNew || fullUrlNew }]);
+      if(error) throw error;
+    }
+    resetSlideForm();
+    loadSlides();
+  }catch(err){ alert(err.message || err) }
+}
+
+async function deleteSlide(id){
+  if(!confirm('Delete this slide?')) return;
+  const { error } = await sb.from('slides').delete().eq('id', id);
+  if(error){ alert(error.message); return }
   loadSlides();
 }
 
-/* ===============================
-   SECTIONS
-================================ */
-async function loadSections() {
-  const list = el("sections");
-  list.innerHTML = "";
-
-  const { data, error } = await sb
-    .from("sections")
-    .select("*")
-    .order("position", { ascending: true });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  data.forEach((s) => list.appendChild(renderSectionItem(s)));
+// ---------- Sections ----------
+async function loadSections(){
+  const list = el('sections'); list.innerHTML = '';
+  const { data, error } = await sb.from('sections').select('*').order('position', { ascending: true });
+  if(error){ alert(error.message); return }
+  data.forEach(s=> list.appendChild(renderSectionItem(s)));
 }
 
-function renderSectionItem(s) {
-  const div = document.createElement("div");
-  div.className = "item";
-
-  const meta = document.createElement("div");
-  meta.innerHTML = `
-    <div><strong>${s.title || "—"}</strong></div>
-    <div class="muted">pos ${s.position ?? 0} · ${s.published ? "published" : "draft"}</div>
-  `;
-
-  const actions = document.createElement("div");
-  actions.className = "grid";
-
-  const edit = document.createElement("button");
-  edit.textContent = "Edit";
-  edit.onclick = () => fillSectionForm(s);
-
-  const del = document.createElement("button");
-  del.textContent = "Delete";
-  del.className = "danger";
-  del.onclick = () => deleteSection(s.id);
-
+function renderSectionItem(s){
+  const div = document.createElement('div'); div.className='item';
+  const ph = document.createElement('img'); ph.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22><rect width=%2280%22 height=%2280%22 fill=%22%23f3f4f6%22/><text x=%2240%22 y=%2248%22 text-anchor=%22middle%22 font-size=%2212%22 fill=%22%23666%22>Sec</text></svg>';
+  const meta = document.createElement('div');
+  meta.innerHTML = `<div><strong>${s.title||'—'}</strong></div>
+    <div class="muted">pos ${s.position ?? 0} · ${s.published? 'published':'draft'}</div>`;
+  const actions = document.createElement('div'); actions.className='grid';
+  const edit = document.createElement('button'); edit.textContent='Edit'; edit.onclick=()=> fillSectionForm(s);
+  const del = document.createElement('button'); del.textContent='Delete'; del.className='danger'; del.onclick=()=> deleteSection(s.id);
   actions.append(edit, del);
-  div.append(meta, actions);
+  div.append(ph, meta, actions);
   return div;
 }
 
-/* ===============================
-   BOOTSTRAP
-================================ */
-window.addEventListener("DOMContentLoaded", async () => {
-el("auth-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  signIn();
-});
-  el("magic").onclick = magicLink;
-  el("logout").onclick = logout;
+function resetSecForm(){ el('sec-id').value=''; el('sec-title').value=''; if (window._quill) window._quill.root.innerHTML=''; el('sec-pos').value='0'; el('sec-pub').value='true' }
+function fillSectionForm(s){ el('sec-id').value=s.id; el('sec-title').value=s.title||''; if (window._quill) window._quill.root.innerHTML = s.content_html||''; el('sec-pos').value=s.position||0; el('sec-pub').value= String(!!s.published) }
 
-  const { data } = await sb.auth.getUser();
-  if (data?.user) afterAuth(data.user);
+async function saveSection(e){
+  e.preventDefault();
+  const id = el('sec-id').value || null;
+  const title = el('sec-title').value.trim();
+  const content_html = (window._quill ? window._quill.root.innerHTML : '');
+  const position = Number(el('sec-pos').value||0);
+  const published = el('sec-pub').value === 'true';
+  try{
+    if(id){
+      const { error } = await sb.from('sections').update({ title, content_html, position, published }).eq('id', id);
+      if(error) throw error;
+    }else{
+      const { error } = await sb.from('sections').insert([{ title, content_html, position, published }]);
+      if(error) throw error;
+    }
+    resetSecForm();
+    loadSections();
+  }catch(err){ alert(err.message || err) }
+}
+
+async function deleteSection(id){
+  if(!confirm('Delete this section?')) return;
+  const { error } = await sb.from('sections').delete().eq('id', id);
+  if(error){ alert(error.message); return }
+  loadSections();
+}
+
+// ---------- Events ----------
+window.addEventListener('DOMContentLoaded', async () => {
+  // Initialize supabase client up-front
+  if (window.supabase) sb = window.supabase.createClient(SB_URL, ANON_KEY);
+
+  el('signin').onclick = signIn;
+  el('login-form').addEventListener('submit', e => { e.preventDefault(); signIn(); });
+  el('magic').onclick = magicLink;
+  el('logout').onclick = logout;
+  el('reset-slide').onclick = resetSlideForm;
+  el('reset-sec').onclick = resetSecForm;
+  el('slide-form').addEventListener('submit', saveSlide);
+  el('save-sec').onclick = saveSection;
+
+  // Resume session if already logged in
+if (sb) {
+  const { data, error } = await sb.auth.getUser();
+  if (!error && data?.user) afterAuth(data.user);
+}
+
 });
 </script>
-
 </body>
 
 </html>
