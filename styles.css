@@ -138,6 +138,11 @@ h4 {
   line-height: 1.5;
 }
 
+.accordion__content img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
 .accordion--open .line-02 {
   transform: rotate(0deg);
 }
@@ -314,3 +319,4 @@ span.emph {
 
 
 }
+
