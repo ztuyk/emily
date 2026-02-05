@@ -139,8 +139,9 @@ h4 {
 }
 
 .accordion__content img {
-  max-width: 100% !important;
+  max-width: 500px !important;
   height: auto !important;
+  width: 100% !important;
 }
 
 .accordion--open .line-02 {
@@ -319,4 +320,5 @@ span.emph {
 
 
 }
+
 
